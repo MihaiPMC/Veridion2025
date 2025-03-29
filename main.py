@@ -116,8 +116,8 @@ def main():
 
     print(getWord, roundID)
 
-    # word = "Human"
-    chosen_weapon_name = get_cheapest_weapon_from_ollama(getWord)
+    word = str(input())
+    chosen_weapon_name = get_cheapest_weapon_from_ollama(word)
     # print(f"Ollama a ales arma: {chosen_weapon_name}")
 
     # Căutăm word_id corespunzător numelui primit de la AI (comparație case-insensitive)
@@ -132,6 +132,12 @@ def main():
 
     weapon_name = weapons_data[weapon_id]["text"]
     print(f"Chosen weapon: {weapon_name} (ID: {weapon_id})")
+
+
+    if int(weapon_id) >= 59:
+        weapon_id = 1
+
+
 
     # Postăm arma aleasă în API
     post_api_call(weapon_id, roundID)
