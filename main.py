@@ -79,7 +79,7 @@ def get_cheapest_weapon_from_ollama(word):
 
     # Folosim subprocess pentru a apela Ollama; asigură-te că modelul specificat este instalat pe Mac-ul tău.
     process = subprocess.Popen(
-        ["ollama", "run", "Mymodel"],  # sau alt model disponibil în Ollama
+        ["ollama", "run", "modelV1"],  # sau alt model disponibil în Ollama
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -102,7 +102,7 @@ def get_api_call():
 
 def post_api_call(word_id, round_id):
     data = {
-        "player_id": "CRV_Coders",
+        "player_id": "ilDJONfOzl",
         "word_id": word_id,
         "round_id": round_id
     }
