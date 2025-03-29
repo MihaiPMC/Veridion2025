@@ -82,17 +82,43 @@ Word: {word}"""
     )
     output, err = process.communicate(input=prompt)
 
-    if err:
-        print("Eroare:", err)
-
     chosen_weapon = output.strip()
     return chosen_weapon
 
+
+def get_api_call():
+    get_url = "http://172.18.4.158:8000/get-word"
+    response = requests.get(get_url)
+    if response.status_code == 200:
+        data = response.json()
+        return data["word"], data["round"]
+    else:
+        print("Eroare la obținerea cuvântului:", response.status_code)
+        return None
+
+
+def post_api_call(word_id, round_id):
+    post_url = "http://172.18.4.158:8000/submit-word"
+    data = {
+        "player_id": "CRV_Coders",
+        "word_id": word_id,
+        "round_id": round_id
+    }
+    response = requests.post(post_url, json=data)
+    if response.status_code == 200:
+        print("Postare reușită")
+    else:
+        print("Eroare la postarea cuvântului:", response.status_code)
+
 def main():
-    # Exemplu: folosim cuvântul "Lion"
-    word = "Human"
-    chosen_weapon_name = get_cheapest_weapon_from_ollama(word)
-    print(f"Ollama a ales arma: {chosen_weapon_name}")
+
+    getWord, roundID = get_api_call()
+
+    print(getWord, roundID)
+
+    # word = "Human"
+    chosen_weapon_name = get_cheapest_weapon_from_ollama(getWord)
+    # print(f"Ollama a ales arma: {chosen_weapon_name}")
 
     # Căutăm word_id corespunzător numelui primit de la AI (comparație case-insensitive)
     weapon_id = None
@@ -107,20 +133,10 @@ def main():
     weapon_name = weapons_data[weapon_id]["text"]
     print(f"Chosen weapon: {weapon_name} (ID: {weapon_id})")
 
-    # Exemplu de apel către API-ul de submit (decomentează și ajustează după nevoie)
-    # submit_word_url = "http://172.18.4.158:8000/submit-word"
-    # payload = {
-    #     "player_id": "CRV_Coders",
-    #     "word_id": int(weapon_id),
-    #     "round_id": 1  # actualizează cu round-ul corect
-    # }
-    # submit_response = requests.post(submit_word_url, json=payload)
-    # if submit_response.status_code == 200:
-    #     print("Submitted successfully!")
-    # else:
-    #     print("Failed to submit word")
-    #     print("Status code:", submit_response.status_code)
-    #     print("Response:", submit_response.text)
+    # Postăm arma aleasă în API
+    post_api_call(weapon_id, roundID)
+
+
 
 if __name__ == "__main__":
     main()
