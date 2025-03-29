@@ -74,16 +74,12 @@ post_url = "http://172.18.4.158:8000/submit-word"
 status_url = "http://172.18.4.158:8000/status"
 
 
-# Această funcție folosește Ollama pentru a obține arma recomandată de AI.
 def get_cheapest_weapon_from_ollama(word):
-    prompt = f"""You are an assistant for a game similar to Rock, Paper, Scissors. You have the following list of weapons with their associated costs:
-Feather (1), Coal (1), Pebble (1), Leaf (2), Paper (2), Rock (2), Water (3), Twig (3), Sword (4), Shield (4), Gun (5), Flame (5), Rope (5), Disease (6), Cure (6), Bacteria (6), Shadow (7), Light (7), Virus (7), Sound (8), Time (8), Fate (8), Earthquake (9), Storm (9), Vaccine (9), Logic (10), Gravity (10), Robots (10), Stone (11), Echo (11), Thunder (12), Karma (12), Wind (13), Ice (13), Sandstorm (13), Laser (14), Magma (14), Peace (14), Explosion (15), War (15), Enlightenment (15), Nuclear Bomb (16), Volcano (16), Whale (17), Earth (17), Moon (17), Star (18), Tsunami (18), Supernova (19), Antimatter (19), Plague (20), Rebirth (20), Tectonic Shift (21), Gamma-Ray Burst (22), Human Spirit (23), Apocalyptic Meteor (24), Earth's Core (25), Neutron Star (26), Supermassive Black Hole (35), Entropy (45).
-When I give you a word, choose the weapon with the lowest cost that can beat that word according to the game rules. Be sure that the chosen weapon can beat the given word — it is obvious. For example, Wind beats Fire, Earthquake beats Town, Gun beats Lion, Paper beats Rock, Scissors beat Paper, Rock beat Scissors etc. Respond with exactly one word – the name of the weapon – and nothing else. Try to respond with the cheapest one.
-Word: {word}"""
+    prompt = f"""Word: {word}"""
 
     # Folosim subprocess pentru a apela Ollama; asigură-te că modelul specificat este instalat pe Mac-ul tău.
     process = subprocess.Popen(
-        ["ollama", "run", "gemma3:12b"],  # sau alt model disponibil în Ollama
+        ["ollama", "run", "Mymodel"],  # sau alt model disponibil în Ollama
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -93,7 +89,6 @@ Word: {word}"""
 
     chosen_weapon = output.strip()
     return chosen_weapon
-
 
 def get_api_call():
     response = requests.get(get_url)
@@ -119,7 +114,7 @@ def post_api_call(word_id, round_id):
 
 
 def play_game(player_id):
-    for round_id in range(1, NUM_ROUNDS+1):
+    for round_id in range(1, NUM_ROUNDS + 1):
         round_num = -1
         while round_num != round_id:
             response = requests.get(get_url)
@@ -158,5 +153,36 @@ def play_game(player_id):
         response = requests.post(post_url, json=data)
         print(response.json())
 
+def play_from_console():
+    while True:
+        word = input("Introdu cuvântul: ")
+        if word.lower() == "exit":
+            break
+
+
+        chosen_word = get_cheapest_weapon_from_ollama(word)
+        print("Cuvântul ales:", chosen_word)
+        word_id = 54
+        for id, details in weapons_data.items():
+            if details["text"].lower() == chosen_word.lower():
+                word_id = int(id)
+                break
+
+        if word_id is None:
+            word_id = int(54)
+
+        if int(word_id) >= 59 or word_id is None:
+            word_id = int(1)
+
+
+        print(word_id)
+
+
+
+
 if __name__ == "__main__":
-    play_game("CRV_Coders")
+
+    # Play the game
+    play_game("ilDJONfOzl")
+
+    # play_from_console();
